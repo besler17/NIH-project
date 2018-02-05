@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>NIH Funding</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.11.min.css"
+    rel="stylesheet" type="text/css">
+    <link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.11.min.css"
+    rel="stylesheet" type="text/css">
+    <!-- Custom styles for this template -->
+    <style>
+      body {
+        padding-top: 54px;
+        background-image: url("http://rosemarycottageclinic.co.uk/wp-content/uploads/Lab-test-wide.jpg");
+        background-repeat: no-repeat;
+        background-size: 1450px 300px
+      }
+      @media (min-width: 992px) {
+        body {
+          padding-top: 56px;
+        }
+      }
+
+    </style>
+    <style type="text/css">
+p.tab{ margin-left: 30px; }
+</style>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.11.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.11.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">NIH Funding Analysis and Prediction</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.nih.gov/">NIH</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://exporter.nih.gov/ExPORTER_Catalog.aspx">Funding Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.ncbi.nlm.nih.gov/pubmed/">PubMed</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <br/>
+    <section id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+        <br/>
+        <br/>
+
+          <h1 class="mt-5" font size="20">NIH Funding Look-up & Prediction<br/></h1>
+          <p class="lead"><br/><br/><br/>Predicting ability to get funding from NIH</p>
+          <ul class="list-unstyled">
+
+                       
+            <a class="btn btn-dark btn-xl js-scroll-trigger" href="#Introduction">How it works</a>
+            <br/>
+            <br/>
+            <li>Type in the name and organization of a lab PI (Principle Investigator):</li>
+           <form method="POST"><br>
+               <label for='name' >Name (First Last): </label><br/>
+               <input type='text' name='name' id='name' maxlength="50" /><br/>
+               <label for='organization' >Organization: </label><br/>
+               <input type='text' name='organization' id='email' maxlength="50" /><br/>
+               <br/>
+               <input class="btn btn-dark btn-xl js-scroll-trigger" type="submit" value="submit">
+           </form>
+
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    
+    
+    <!-- Services -->
+    <section id="Introduction">
+    <br/>
+    <br/>
+    <p class="lead" style="font-size:48px"><b>&nbsp Introduction</b></p>
+    <p class='tab'><a href="https://www.nih.gov/">National Institutes of Health</a> (NIH) is one of the world's foremost medical research centers, an agency of the U.S. Department of Health and Human Services making important discoveries that improve health and save lives.</p>
+    <p class='tab'>NIH has a budget more than $30 billion a year to enhance life, and reduce illness and disability. 
+       NIH funded research has led to breakthroughs and new treatments, helping people live longer, healthier lives, and building the research foundation that drives discovery.</p>
+       
+    <p class="lead" style="font-size:45px"><b>&nbsp Date Sources</b></p>
+    <p class='tab'>The NIH funding data is obtained from NIH funding reporter.</p>
+    <p class='tab'>The data source of publication information is <a href="https://www.ncbi.nlm.nih.gov/">NCBI</a> through its API.</p>
+    <p class='tab'>The impact factor data is from <a href="https://www.researchgate.net/post/New_Impact_factors_2017_for_Journals_are_released_now">Glassdoor sharing</a>.</p>.
+    
+    <p class="lead" style="font-size:45px"><b> &nbsp Analytic Methedology</b></p>
+    <p class='tab'>The data is cleaned and analyzed using Python Pandas dataframe, and the prediciton is made based on SVC machine-learning model using Scikit-learn module.</p>
+    
+    <br/>
+    <br/>
+    <div class="col-lg-12 text-center">
+    <a class="btn btn-dark btn-xl js-scroll-trigger" href="#top">Back to top</a>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <!-- Bootstrap core JavaScript -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    </section>
+  </body>
+
+</html>

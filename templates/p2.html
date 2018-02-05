@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>NIH Funding</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/vendor/bootstrap/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.11.min.css"
+    rel="stylesheet" type="text/css">
+    <link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.11.min.css"
+    rel="stylesheet" type="text/css">
+    
+
+    <!-- Custom styles for this template -->
+    <style>
+      body {
+        padding-top: 54px;
+      }
+      @media (min-width: 992px) {
+        body {
+          padding-top: 56px;
+        }
+      }
+
+    </style>
+    <style type="text/css">
+p.tab{ margin-left: 30px; }
+</style>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.11.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.11.min.js"></script>
+    
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">NIH Funding Analysis and Prediction</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.nih.gov/">NIH</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://exporter.nih.gov/ExPORTER_Catalog.aspx">Funding Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.ncbi.nlm.nih.gov/pubmed/">PubMed</a>
+            </li>
+            
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    {{script|safe}}
+    
+    <div id="block_container">
+
+    {{div|safe}}
+
+    </div>
+    
+    <p></p>
+        <p class='tab'>Predicted ability to get funding: <span class="stars" data-rating="{{rank}}" data-num-stars="5" ></span></p>
+        <p class='tab'>Since {{first_year}}, a total of ${{total_amount}} has been funded to {{name}}.</p>
+        <p class='tab'>{{c5}} journals have been published since 2008, incluing {{rev_c}} review articles. Average <a href="https://www.omicsonline.org/open-access-journals-impact-factors.php">impact factor</a>:{{aveif}}.</p>
+    
+    
+    <br/>
+    <br/>
+    <p class='tab' style="font-size:38px">Selected publications with high influence</p>
+    <p class='tab'>{{j1|safe}}</p>
+    <p class='tab'>{{j2|safe}}</p>
+    <p class='tab'>{{j3|safe}}</p>
+    
+    
+    <br/>
+    <br/>
+    <p class='tab' style="font-size:38px">Most funded research fields</p>
+    <meta charset="utf-8">
+    <script src="/static/vendor/bootstrap/js/d3.v3.js"></script>
+    <script src="/static/vendor/bootstrap/js/d3.layout.cloud.js"></script>
+    
+    
+
+    
+    <script>
+  var fill = d3.scale.category20();
+
+  d3.layout.cloud().size([700, 700])
+      .words({{gword|safe}})
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .font("Impact")
+      .fontSize(function(d) { return d.size; })
+      .on("end", draw)
+      .start();
+
+  function draw(words) {
+    d3.select("body").append("center").append("svg")
+        .attr("width", 700)
+        .attr("height", 700)
+      .append("g")
+        .attr("transform", "translate(350,350)")
+      .selectAll("text")
+        .data(words)
+      .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("font-family", "Impact")
+        .style("fill", function(d, i) { return fill(i); })
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; });
+  }
+    
+    </script>
+    <br/>
+    <br/>
+    <br/>
+    <div class="col-lg-12 text-center">
+    <a class="btn btn-dark btn-xl js-scroll-trigger" href="">Try again</a>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+
+</html>
+
+<script>
+    $.fn.stars = function() {
+        return $(this).each(function() {
+
+            var rating = $(this).data("rating");
+
+            var numStars = $(this).data("numStars");
+
+            var fullStar = new Array(Math.floor(rating + 1)).join('<i class="fa fa-star"></i>');
+
+            var halfStar = ((rating%1) !== 0) ? '<i class="fa fa-star-half-empty"></i>': '';
+
+            var noStar = new Array(Math.floor(numStars + 1 - rating)).join('<i class="fa fa-star-o"></i>');
+
+            $(this).html(fullStar + halfStar + noStar);
+
+        });
+    }
+
+    $('.stars').stars();</script>
