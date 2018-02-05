@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import requests
 import pandas as pd
 import numpy as np
