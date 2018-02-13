@@ -7,4 +7,3 @@ pip
 simplejson
 scikit-learn
 numpy
-pickle
