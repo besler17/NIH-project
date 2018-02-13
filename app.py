@@ -13,7 +13,6 @@ from bokeh.models import NumeralTickFormatter
 from bokeh.models.glyphs import HBar
 from sklearn.model_selection import train_test_split
 import sklearn.svm
-from requests_futures.sessions import FuturesSession
 import pickle
 
 app = Flask(__name__)
@@ -23,6 +22,7 @@ def cat_ratio(cat):
     for item in cat.items():
         total=total+item[1]
     slst=sorted(cat.items(), key=lambda x:x[1])
+    #catelst=[i[0].encode('utf-8') for i in slst]
     catelst=[str(i[0]) for i in slst]
     percentlst=[float(i[1])/total for i in slst]
     return catelst, percentlst
@@ -112,8 +112,8 @@ def second_page():
     
     ifdic=dict()
     for i, r in ifdf.iterrows():
-        ifdic[r['Full Journal Title'].lower()]=float(r['Journal Impact Factor'])
-            
+        ifdic[r['Full Journal Title'].lower()]=float(r['Journal Impact Factor'])    
+    
     name=request.form['name']
     org=request.form['organization']
     
@@ -145,10 +145,6 @@ def second_page():
     p = row(test, test2)
     script, div = components(p)
     
-    
-    #dfml['cat_cost']=map(category, dfml['t_cost'])        
-    
-    
     pubinfo=dict()
     pubinfo[name]=dict()
     pubinfo[name]['selfcount2008']=0
@@ -162,58 +158,63 @@ def second_page():
     pubinfo[name]['count5years']=0
     pubinfo[name]['publist']=dict()
     
-    session = FuturesSession(max_workers=10)
-    
-    urlname='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+name+'[author]&retmode=json&retmax=100'
+             
+    urlname='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term='+name+'[author]&retmode=json&retmax=200'
     responses=requests.get(urlname)
     pubinfo[name]['hiscount']=int(json.loads(responses.text)['esearchresult']['count'])
-    idlst=json.loads(responses.text)['esearchresult']['idlist']
-    addresslst=['https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+item+'&retmode=json' for item in idlst]
-    bbb=[json.loads(session.get(t).result().text) for t in addresslst]
-    ccc=[i for i in bbb if int(i['result'][i['result']['uids'][0]]['pubdate'][:4])>=2008]
-    
-    for pub in ccc:
-        item=pub['result']['uids'][0]
-        if (name.split()[1].strip(',').lower() not in pub['result'][item]['lastauthor'].lower()) and (name.split()[1].strip(',').lower() not in pub['result'][item]['sortfirstauthor'].lower()):
-            pubinfo[name]['cocount2008']=pubinfo[name]['cocount2008']+1
-            continue
-        pubinfo[name]['publist'][item]=dict()
-        try:
-            pubinfo[name]['publist'][item]['fulljournalname']=pub['result'][item]['fulljournalname']
-            tname=pub['result'][item]['fulljournalname'].lower()
-            titlename=pub['result'][item]['title'].encode('utf-8')
-            if '(' in tname:
-                n=tname.index('(')
-                tname=tname[:n].strip()
-            if ':' in tname:
-                n=tname.index(':')
-                tname=tname[:n].strip()
-            if '.' in tname:
-                n=tname.index('.')
-                tname=tname[:n].strip()
-            if tname.startswith('the '):
-                tname=tname.lstrip('the ')
-            pubinfo[name]['publist'][item]['IF']=ifdic[tname]
-            pubinfo[name]['publist'][item]['title']=titlename
-            if pubinfo[name]['publist'][item]['IF']>pubinfo[name]['highIF']:
-                pubinfo[name]['highIF']=pubinfo[name]['publist'][item]['IF']
-            pubinfo[name]['sumIF']=pubinfo[name]['sumIF']+pubinfo[name]['publist'][item]['IF']
-            pubinfo[name]['publist'][item]['date']=int(pub['result'][item]['pubdate'][:4])
-            if pubinfo[name]['publist'][item]['date']>=2012:
-                pubinfo[name]['count5years']=pubinfo[name]['count5years']+1
-            if ('Review' in pub['result'][item]['pubtype']) or ('rev' in pub['result'][item]['source'].lower()):
-                pubinfo[name]['publist'][item]['review']=1
-                pubinfo[name]['revcount']=pubinfo[name]['revcount']+1
-            else:
-                pubinfo[name]['publist'][item]['review']=0
-            pubinfo[name]['selfcount2008']=pubinfo[name]['selfcount2008']+1
-        except:
-            pass
+    t=0
+    for item in json.loads(responses.text)['esearchresult']['idlist']:
+        if t<3:
+            urll2='https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id='+item+'&retmode=json'
+            response2=requests.get(urll2)
+            try:
+                if int(json.loads(response2.text)['result'][item]['pubdate'][:4])<2008:
+                    t=t+1
+                    continue
+            except:
+                pass
+            if (name.split()[1].strip(',').lower() not in json.loads(response2.text)['result'][item]['lastauthor'].lower()) and (name.split()[1].strip(',').lower() not in json.loads(response2.text)['result'][item]['sortfirstauthor'].lower()):
+                pubinfo[name]['cocount2008']=pubinfo[name]['cocount2008']+1
+                continue
+            
+            pubinfo[name]['publist'][item]=dict()
+            try:   
+                pubinfo[name]['publist'][item]['fulljournalname']=json.loads(response2.text)['result'][item]['fulljournalname']
+                tname=json.loads(response2.text)['result'][item]['fulljournalname'].lower()
+                titlename=json.loads(response2.text)['result'][item]['title'].encode('utf-8')
+                if '(' in tname:
+                    n=tname.index('(')
+                    tname=tname[:n].strip()
+                if ':' in tname:
+                    n=tname.index(':')
+                    tname=tname[:n].strip()
+                if '.' in tname:
+                    n=tname.index('.')
+                    tname=tname[:n].strip()
+                if tname.startswith('the '):
+                    tname=tname.lstrip('the ')
+                pubinfo[name]['publist'][item]['IF']=ifdic[tname]
+                pubinfo[name]['publist'][item]['title']=titlename
+                if pubinfo[name]['publist'][item]['IF']>pubinfo[name]['highIF']:
+                    pubinfo[name]['highIF']=pubinfo[name]['publist'][item]['IF']
+                pubinfo[name]['sumIF']=pubinfo[name]['sumIF']+pubinfo[name]['publist'][item]['IF']
+                pubinfo[name]['publist'][item]['date']=int(json.loads(response2.text)['result'][item]['pubdate'][:4])
+                if pubinfo[name]['publist'][item]['date']>=2012:
+                    pubinfo[name]['count5years']=pubinfo[name]['count5years']+1
+                if ('Review' in json.loads(response2.text)['result'][item]['pubtype']) or ('rev' in json.loads(response2.text)['result'][item]['source'].lower()):
+                    pubinfo[name]['publist'][item]['review']=1
+                    pubinfo[name]['revcount']=pubinfo[name]['revcount']+1
+                else:
+                    pubinfo[name]['publist'][item]['review']=0
+                pubinfo[name]['selfcount2008']=pubinfo[name]['selfcount2008']+1
+            except:
+                pass
+        else:
+            break
     try:
         pubinfo[name]['aveIF']=(pubinfo[name]['sumIF'])/(pubinfo[name]['selfcount2008'])
     except:
-        pass         
-    
+        pass
     aat=[i for i in pubinfo[name]['publist'].items() if 'IF' in i[1]]
     bbt=sorted(aat, key=lambda x:x[1]['IF'], reverse=True)
     if len(bbt)>=3:
