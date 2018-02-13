@@ -132,6 +132,7 @@ def second_page():
     test = figure(plot_width=650, plot_height=400, tools=TOOLS, title='Amount of NIH Funding Received', x_axis_label='Year', y_axis_label='Funding Amount($)')
     test.line(ylst,amoulst, line_width=3, legend='PI: %s'%name)
     test.title.text_font_size = '14pt'
+    test.legend.location='top_left'
     test.left[0].formatter.use_scientific = False
     test.yaxis.formatter=NumeralTickFormatter(format='0,0')
 
