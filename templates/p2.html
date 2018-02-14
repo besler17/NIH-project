@@ -14,7 +14,7 @@
     <link href="/static/vendor/bootstrap/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
+    <script type="text/javascript" src="/static/vendor/bootstrap/js/d3.v3.js"></script>
     <link
     href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.11.min.css"
     rel="stylesheet" type="text/css">
@@ -106,10 +106,9 @@ p.tab{ margin-left: 30px; }
     <script src="/static/vendor/bootstrap/js/d3.v3.js"></script>
     <script src="/static/vendor/bootstrap/js/d3.layout.cloud.js"></script>
     
-    <svg>{{fill|safe}}</svg>
 
     
-    <script>
+    <script type="text/javascript">
   var fill = d3.scale.category20();
 
   d3.layout.cloud().size([700, 700])
