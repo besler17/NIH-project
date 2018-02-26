@@ -69,7 +69,7 @@ def get_year_dic(name, org):
     max_c=fieldlst[0][1]
     min_c=fieldlst[-1][1]
     for p in fieldlst:
-        temp={'text': p[0].encode('utf-8'), 'size': int(((p[1] - (min_c-1)) / float(max_c-min_c) * 40) + 35)}
+        temp={'text': p[0].encode('utf-8'), 'size': int(((p[1] - (min_c-1)) / float(max_c-min_c) * 40) + 30)}
         gwordlst.append(temp)
     
     df=pd.DataFrame(prolst)
